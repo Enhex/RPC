@@ -1,0 +1,5 @@
+[requires]
+high_level_asio/master@enhex/stable
+
+[generators]
+premake
