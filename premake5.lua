@@ -1,16 +1,24 @@
-location_dir = "../build/"
+newoption {
+	trigger     = "location",
+	value       = "./",
+	description = "Where to generate the project.",
+}
 
-include(location_dir .. "conanbuildinfo.premake.lua")
+if not _OPTIONS["location"] then
+	_OPTIONS["location"] = "./"
+end
+
+include(_OPTIONS["location"] .. "conanbuildinfo.premake.lua")
 
 workspace("RPC")
-	location(location_dir)
+	location(_OPTIONS["location"])
 	conan_basic_setup()
 
 	project("RPC")
 		kind "StaticLib"
 		language "C++"
 		cppdialect "C++17"
-		targetdir = location_dir .. "bin/%{cfg.buildcfg}"
+		targetdir = "bin/%{cfg.buildcfg}"
 
 		files{
 			"src/*",
