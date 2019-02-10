@@ -19,7 +19,7 @@ RPC::RPC(asio::io_context & context, uint16_t port) :
 
 void RPC::connection::serve()
 {
-	async_receive(asio::buffer(&RPC_id, sizeof(RPC_id)), [&](const std::error_code& error, std::size_t bytes_transferred)
+	async_receive(asio::buffer(&RPC_id, sizeof(RPC_id)), [&](const hla::error_code& error, std::size_t bytes_transferred)
 	{
 		if (error == asio::error::eof ||
 			error == asio::error::connection_reset) {

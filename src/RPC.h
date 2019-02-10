@@ -11,8 +11,10 @@ struct RPC
 	// RPC ID to function
 	std::unordered_map<size_t, std::function<void(asio::ip::tcp::socket&)>> functions;
 
+	// accepts new connections
 	hla::server server;
 
+	// serves RPC requests
 	struct connection : asio::ip::tcp::socket
 	{
 		using asio::ip::tcp::socket::socket;
