@@ -28,4 +28,39 @@ struct RPC
 	};
 
 	std::list<connection> connections;
+
+
+	// listen to incoming RPC connections
+	void accept()
+	{
+		using asio::ip::tcp;
+		server.accept([&](tcp::socket& socket)
+		{
+			auto& conn = connections.emplace_back(std::move(socket));
+			add_connection(conn);
+		});
+	}
+
+	// provide hooking point for new connection event.
+	// on_accept may return false to reject the connection.
+	template<typename OnAccept>
+	void accept(OnAccept&& on_accept)
+	{
+		using asio::ip::tcp;
+		server.accept([&](tcp::socket& socket)
+		{
+			auto& conn = connections.emplace_back(std::move(socket));
+
+			if (!on_accept(conn)) {
+				connections.pop_back();
+				return;
+			}
+
+			add_connection(conn);
+		});
+	}
+
+
+protected:
+	void add_connection(connection& conn);
 };

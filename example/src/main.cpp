@@ -21,6 +21,7 @@ int main()
 	asio::io_context context;
 
 	RPC rpc(context, rpc_port);
+	rpc.accept();
 
 	// register RPC
 	rpc.functions[f_id] = f;

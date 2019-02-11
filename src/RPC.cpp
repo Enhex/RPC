@@ -5,15 +5,13 @@ size_t test = 0;
 RPC::RPC(asio::io_context & context, uint16_t port) :
 	server(context, port)
 {
-	// listen to incoming RPCs
-	using asio::ip::tcp;
-	server.accept([&](tcp::socket& socket)
-	{
-		auto& conn = connections.emplace_back(std::move(socket));
-		conn.self_iter = --connections.end();
-		conn.manager = this;
-		conn.serve();
-	});
+}
+
+void RPC::add_connection(connection & conn)
+{
+	conn.self_iter = --connections.end();
+	conn.manager = this;
+	conn.serve();
 }
 
 
