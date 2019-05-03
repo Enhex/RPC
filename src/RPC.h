@@ -49,7 +49,7 @@ struct RPC
 	void accept(OnAccept&& on_accept)
 	{
 		using asio::ip::tcp;
-		server.accept([&](tcp::socket& socket)
+		server.accept([&, on_accept = std::move(on_accept)](tcp::socket& socket)
 		{
 			auto& conn = connections.emplace_back(std::move(socket));
 
