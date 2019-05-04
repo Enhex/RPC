@@ -3,5 +3,5 @@
 int main()
 {
 	asio::io_context context;
-	RPC rpc(context, 7357);
+	RPC<int> rpc(context, 7357);
 }

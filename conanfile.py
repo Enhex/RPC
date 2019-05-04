@@ -10,7 +10,8 @@ def run_premake(self):
 					'11': '2012',
 					'12': '2013',
 					'14': '2015',
-					'15': '2017'}
+					'15': '2017',
+					'16': '2019'}
 		premake_command = "premake5 vs%s" % _visuals.get(str(self.settings.compiler.version), "UnknownVersion %s" % str(self.settings.compiler.version))
 		self.run(premake_command)
 	else:
@@ -36,17 +37,17 @@ class RpcConan(ConanFile):
 		"high_level_asio/master@enhex/stable"
 	)
 
-	def build(self):
-		run_premake(self)
-		self.run('build')
+	# def build(self):
+	# 	run_premake(self)
+	# 	self.run('build')
 
 	def package(self):
 		self.copy("*.h", dst="include", src="src")
-		self.copy("*.lib", dst="lib", keep_path=False)
-		self.copy("*.dll", dst="bin", keep_path=False)
-		self.copy("*.dylib*", dst="lib", keep_path=False)
-		self.copy("*.so", dst="lib", keep_path=False)
-		self.copy("*.a", dst="lib", keep_path=False)
+		# self.copy("*.lib", dst="lib", keep_path=False)
+		# self.copy("*.dll", dst="bin", keep_path=False)
+		# self.copy("*.dylib*", dst="lib", keep_path=False)
+		# self.copy("*.so", dst="lib", keep_path=False)
+		# self.copy("*.a", dst="lib", keep_path=False)
 
-	def package_info(self):
-		self.cpp_info.libs = ["RPC"]
+	# def package_info(self):
+	# 	self.cpp_info.libs = ["RPC"]

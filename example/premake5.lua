@@ -16,10 +16,10 @@ workspace("RPC example")
 	conan_basic_setup()
 	startproject "RPC example"
 
-	externalproject "RPC"
-		location "../../build/"
-		kind "StaticLib"
-		language "C++"
+	-- externalproject "RPC"
+	-- 	location "../../build/"
+	-- 	kind "StaticLib"
+	-- 	language "C++"
 
 	project("RPC example")
 		kind "ConsoleApp"
@@ -34,7 +34,9 @@ workspace("RPC example")
 		includedirs{
 			"../src"
 		}
-		links{"RPC"}
+		
+		--links{"RPC"}
+
 		defines{"_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS"}
 
 		filter "configurations:Debug"

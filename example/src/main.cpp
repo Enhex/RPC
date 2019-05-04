@@ -6,7 +6,9 @@
 
 constexpr uint16_t rpc_port = 7357;
 
-constexpr size_t f_id = 1;
+using RPC_ID = uint32_t;
+
+constexpr RPC_ID f_id = 1;
 
 void f(asio::ip::tcp::socket& socket)
 {
@@ -20,7 +22,7 @@ int main()
 
 	asio::io_context context;
 
-	RPC rpc(context, rpc_port);
+	RPC<RPC_ID> rpc(context, rpc_port);
 	rpc.accept();
 
 	// register RPC
@@ -31,7 +33,7 @@ int main()
 	// call RPC via TCP
 	tcp::socket rpc_client(context);
 	hla::connect(rpc_client, "127.0.0.1", rpc_port);
-	size_t rpc_call_id = 1;
+	RPC_ID rpc_call_id = 1;
 
 	for (int n = 5; n-- > 0;)
 	{
