@@ -2,20 +2,25 @@
 
 #include <any>
 #include <functional>
+#include <hla/include_ssl.h>
 #include <hla/server.h>
 #include <list>
 #include <unordered_map>
 
 template<typename ID_t>
-struct RPC
+struct RPC_TLS
 {
-	RPC(asio::io_context& context, uint16_t port) :
+	using ssl_socket_t = asio::ssl::stream<asio::ip::tcp::socket>;
+
+	RPC_TLS(asio::io_context& context, uint16_t port) :
 		server(context, port)
 	{
 	}
 
+	asio::ssl::context ssl_context{asio::ssl::context::tls_server};
+
 	// RPC ID to function
-	std::unordered_map<ID_t, std::function<void(asio::ip::tcp::socket&)>> functions;
+	std::unordered_map<ID_t, std::function<void(ssl_socket_t&)>> functions;
 
 	// accepts new connections
 	hla::server server;
@@ -23,9 +28,13 @@ struct RPC
 	// serves RPC requests
 	struct connection
 	{
-		connection(RPC& manager, asio::ip::tcp::socket&& socket) : manager(manager), socket(std::move(socket)) {}
-		asio::ip::tcp::socket socket;
-		RPC& manager;
+		connection(RPC_TLS& manager, asio::ip::tcp::socket&& tcp) : manager(manager), socket(std::move(tcp), manager.ssl_context)
+		{
+			socket.handshake(ssl_socket_t::server);
+		}
+
+		ssl_socket_t socket;
+		RPC_TLS& manager;
 
 		bool stop = false;
 
@@ -62,15 +71,15 @@ struct RPC
 	};
 
 	std::list<connection> connections;
-	std::unordered_map<asio::ip::tcp::socket*, typename decltype(connections)::iterator> socket_to_connection;
+	std::unordered_map<ssl_socket_t*, typename decltype(connections)::iterator> socket_to_connection;
 
 
-	void close_connection(asio::ip::tcp::socket* socket)
+	void close_connection(ssl_socket_t* socket)
 	{
 		socket_to_connection.at(socket)->stop = true;
 	}
 
-	void remove_connection(asio::ip::tcp::socket* socket)
+	void remove_connection(ssl_socket_t* socket)
 	{
 		connections.erase(socket_to_connection.at(socket));
 		socket_to_connection.erase(socket);

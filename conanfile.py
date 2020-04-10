@@ -34,7 +34,8 @@ class RpcConan(ConanFile):
 	exports_sources = "src/*"
 	
 	requires = (
-		"high_level_asio/master@enhex/stable"
+		"high_level_asio/master@enhex/stable",
+		"openssl/1.1.1f"
 	)
 
 	# def build(self):
