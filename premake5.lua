@@ -13,6 +13,7 @@ include(_OPTIONS["location"] .. "conanbuildinfo.premake.lua")
 workspace("RPC")
 	location(_OPTIONS["location"])
 	conan_basic_setup()
+	startproject "test"
 
 	project("RPC")
 		kind "StaticLib"
