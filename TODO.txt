@@ -1,0 +1,4 @@
+- RPC remove_connection should be protected function
+
+- tests
+    - close_connection()
