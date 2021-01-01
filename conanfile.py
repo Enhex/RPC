@@ -17,7 +17,7 @@ def run_premake(self):
 	else:
 		self.run("premake5 gmake")
 
-		
+
 class RpcConan(ConanFile):
 	name = "RPC"
 	version = "master"
@@ -32,10 +32,10 @@ class RpcConan(ConanFile):
 	generators = "premake"
 	exports = "premake5.lua"
 	exports_sources = "src/*"
-	
+
 	requires = (
 		"high_level_asio/master@enhex/stable",
-		"openssl/1.1.1f"
+		"openssl/1.1.1i"
 	)
 
 	# def build(self):

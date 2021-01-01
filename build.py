@@ -14,7 +14,7 @@ def create_symlink(src, dst):
     # create all parent directories of the symlink one
     parent_dir = os.path.dirname(dst)
     os.makedirs(parent_dir, exist_ok=True)
-    
+
     try:
         os.symlink(src, dst)
     except:
