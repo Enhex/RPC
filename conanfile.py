@@ -35,7 +35,7 @@ class RpcConan(ConanFile):
 
 	requires = (
 		"high_level_asio/master@enhex/stable",
-		"openssl/1.1.1i"
+		"openssl/1.1.1k"
 	)
 
 	# def build(self):
