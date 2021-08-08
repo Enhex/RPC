@@ -33,9 +33,11 @@ struct RPC_TLS
 	// serves RPC requests
 	struct connection
 	{
-		connection(RPC_TLS& manager, asio::ip::tcp::socket&& tcp) : manager(manager), socket(std::move(tcp), manager.ssl_context)
+		connection(RPC_TLS& manager, asio::ip::tcp::socket&& tcp, hla::error_code& ec) :
+			manager(manager),
+			socket(std::move(tcp), manager.ssl_context)
 		{
-			socket.handshake(ssl_socket_t::server);
+			socket.handshake(ssl_socket_t::server, ec);
 		}
 
 		ssl_socket_t socket;
@@ -96,21 +98,35 @@ struct RPC_TLS
 		using asio::ip::tcp;
 		server.accept([&](tcp::socket& socket)
 		{
-			auto& conn = connections.emplace_back(*this, std::move(socket));
-			socket_to_connection.emplace(&conn.socket, --connections.end());
-			conn.serve();
+			// TLS handshake may fail
+			hla::error_code ec;
+			auto& conn = connections.emplace_back(*this, std::move(socket), ec);
+			if(ec) {
+				connections.pop_back();
+			}
+			else {
+				socket_to_connection.emplace(&conn.socket, --connections.end());
+				conn.serve();
+			}
 		});
 	}
 
 	// provide hooking point for new connection event.
 	// on_accept may return false to reject the connection.
-	template<typename OnAccept>
-	void accept(OnAccept&& on_accept)
+	template<typename OnAccept, typename OnFail>
+	void accept(OnAccept&& on_accept, OnFail&& on_fail = [](hla::error_code&){})
 	{
 		using asio::ip::tcp;
-		server.accept([&, on_accept = std::move(on_accept)](tcp::socket& socket)
+		server.accept([&, on_accept = std::move(on_accept), on_fail = std::move(on_fail)](tcp::socket& socket)
 		{
-			auto& conn = connections.emplace_back(*this, std::move(socket));
+			hla::error_code ec;
+			auto& conn = connections.emplace_back(*this, std::move(socket), ec);
+			if(ec) {
+				connections.pop_back();
+				on_fail(ec);
+				return;
+			}
+
 			socket_to_connection.emplace(&conn.socket, --connections.end());
 
 			if (!on_accept(conn.socket)) {
