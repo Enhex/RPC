@@ -14,6 +14,11 @@ struct RPC
 	{
 	}
 
+	RPC(asio::io_context& context, asio::ip::tcp::endpoint const& endpoint) :
+		server(context, endpoint)
+	{
+	}
+
 	// RPC ID to function
 	std::unordered_map<ID_t, std::function<void(asio::ip::tcp::socket&)>> functions;
 

@@ -17,6 +17,11 @@ struct RPC_TLS
 	{
 	}
 
+	RPC_TLS(asio::io_context& context, asio::ip::tcp::endpoint const& endpoint) :
+		server(context, endpoint)
+	{
+	}
+
 	asio::ssl::context ssl_context{asio::ssl::context::tls_server};
 
 	// RPC ID to function
