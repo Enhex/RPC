@@ -30,11 +30,13 @@ class RpcConan(ConanFile):
 	settings = "os", "compiler", "build_type", "arch"
 	options = {
 		"shared": [True, False],
-		"system_openssl": [True, False]
+		"system_openssl": [True, False],
+		"openssl1": [True, False],
 	}
 	default_options = {
 		"shared": False,
-		"system_openssl": False
+		"system_openssl": False,
+		"openssl1": False,
 	}
 	generators = "premake"
 	exports = "premake5.lua"
@@ -46,7 +48,10 @@ class RpcConan(ConanFile):
 
 	def requirements(self):
 		if not self.options.system_openssl:
-			self.requires("openssl/3.0.5")
+			if self.options.openssl1:
+				self.requires("openssl/1.1.1q")
+			else:
+				self.requires("openssl/3.0.5")
 
 	# def build(self):
 	# 	run_premake(self)
