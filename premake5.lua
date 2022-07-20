@@ -48,6 +48,9 @@ workspace("RPC")
 
 		includedirs {"src/"}
 
+		-- if using system OpenSSL need to link it manually because test doesn't use the conan package
+		--links {"crypto", "ssl"}
+
 		defines{"_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS"}
 
 		filter "configurations:Debug"

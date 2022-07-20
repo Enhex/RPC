@@ -28,16 +28,25 @@ class RpcConan(ConanFile):
 	description = "Basic RPC over TCP."
 	topics = ("<Put some tag here>", "<here>", "<and here>")
 	settings = "os", "compiler", "build_type", "arch"
-	options = {"shared": [True, False]}
-	default_options = "shared=False"
+	options = {
+		"shared": [True, False],
+		"system_openssl": [True, False]
+	}
+	default_options = {
+		"shared": False,
+		"system_openssl": False
+	}
 	generators = "premake"
 	exports = "premake5.lua"
 	exports_sources = "src/*"
 
 	requires = (
-		"high_level_asio/master@enhex/stable",
-		"openssl/3.0.5"
+		"high_level_asio/master@enhex/stable"
 	)
+
+	def requirements(self):
+		if not self.options.system_openssl:
+			self.requires("openssl/3.0.5")
 
 	# def build(self):
 	# 	run_premake(self)
@@ -51,5 +60,6 @@ class RpcConan(ConanFile):
 		# self.copy("*.so", dst="lib", keep_path=False)
 		# self.copy("*.a", dst="lib", keep_path=False)
 
-	# def package_info(self):
-	# 	self.cpp_info.libs = ["RPC"]
+	def package_info(self):
+		if self.options.system_openssl:
+			self.cpp_info.system_libs = ["ssl", "crypto"]
