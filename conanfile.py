@@ -49,9 +49,9 @@ class RpcConan(ConanFile):
 	def requirements(self):
 		if not self.options.system_openssl:
 			if self.options.openssl1:
-				self.requires("openssl/1.1.1s")
+				self.requires("openssl/1.1.1t")
 			else:
-				self.requires("openssl/3.0.7")
+				self.requires("openssl/3.0.8")
 
 	# def build(self):
 	# 	run_premake(self)
