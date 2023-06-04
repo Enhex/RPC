@@ -40,8 +40,8 @@ struct RPC_TLS
 			socket.handshake(ssl_socket_t::server, ec);
 		}
 
-		ssl_socket_t socket;
 		RPC_TLS& manager;
+		ssl_socket_t socket;
 
 		bool stop = false;
 

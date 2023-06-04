@@ -29,8 +29,8 @@ struct RPC
 	struct connection
 	{
 		connection(RPC& manager, asio::ip::tcp::socket&& socket) : manager(manager), socket(std::move(socket)) {}
-		asio::ip::tcp::socket socket;
 		RPC& manager;
+		asio::ip::tcp::socket socket;
 
 		bool stop = false;
 
