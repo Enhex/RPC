@@ -26,6 +26,7 @@ workspace("RPC")
 		}
 
 		defines{"_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS"}
+		buildoptions{"-Wall"}
 
 		filter "configurations:Debug"
 			defines { "DEBUG" }
