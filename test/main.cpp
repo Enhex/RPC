@@ -51,12 +51,13 @@ int main()
 		auto ctx_future = std::async([&context] { context.run(); });
 
 		// client side context
+		asio::io_context context2; // could reuse context, but want to show that client's context doesn't need to call run()
 		asio::ssl::context ssl_context{asio::ssl::context::tls_client};
 		ssl_context.set_verify_mode(asio::ssl::verify_peer);
 		ssl_context.load_verify_file("cert.pem");
 
 		using ssl_socket = asio::ssl::stream<asio::ip::tcp::socket>;
-		ssl_socket socket(asio::ip::tcp::socket(context), ssl_context);
+		ssl_socket socket(context2, ssl_context);
 		socket.next_layer().connect(asio::ip::tcp::endpoint(hla::localhost_v4, port));
 
 		socket.handshake(ssl_socket::client);
