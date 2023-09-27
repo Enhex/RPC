@@ -137,4 +137,13 @@ struct RPC_TLS
 			conn.serve();
 		});
 	}
+
+	static void client_close_connection(ssl_socket_t& socket)
+	{
+		hla::error_code ec; // ignore errors
+		socket.lowest_layer().cancel(ec);
+		socket.shutdown(ec);
+		socket.next_layer().shutdown(asio::ip::tcp::socket::shutdown_both, ec);
+		socket.next_layer().close(ec);
+	}
 };
