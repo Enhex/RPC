@@ -50,8 +50,7 @@ struct RPC_TLS
 			RPC_id = 0;
 			socket.async_read_some(asio::buffer(&RPC_id, sizeof(RPC_id)), [&](const hla::error_code& error, std::size_t bytes_transferred)
 			{
-				if (error == asio::error::eof ||
-					error == asio::error::connection_reset) {
+				if(error){
 					manager.remove_connection(&socket);
 					return;
 				}
@@ -80,6 +79,7 @@ struct RPC_TLS
 	std::list<connection> connections;
 	std::unordered_map<ssl_socket_t*, typename decltype(connections)::iterator> socket_to_connection;
 
+	virtual void on_remove_connection(ssl_socket_t& socket){};
 
 	void close_connection(ssl_socket_t* socket)
 	{
@@ -88,6 +88,7 @@ struct RPC_TLS
 
 	void remove_connection(ssl_socket_t* socket)
 	{
+		on_remove_connection(*socket);
 		connections.erase(socket_to_connection.at(socket));
 		socket_to_connection.erase(socket);
 	}
