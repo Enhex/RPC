@@ -8,11 +8,11 @@ if not _OPTIONS["location"] then
 	_OPTIONS["location"] = "./"
 end
 
-include(_OPTIONS["location"] .. "conanbuildinfo.premake.lua")
+include(_OPTIONS["location"] .. "conandeps.premake5.lua")
 
 workspace("RPC")
 	location(_OPTIONS["location"])
-	conan_basic_setup()
+	conan_setup()
 	startproject "test"
 
 	project("RPC")

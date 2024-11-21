@@ -1,4 +1,6 @@
-from conans import ConanFile, CMake
+import os
+from conan import ConanFile
+from conan.tools.files import copy
 
 
 # automatically choose Premake generator
@@ -20,14 +22,12 @@ def run_premake(self):
 
 
 class RpcConan(ConanFile):
-	name = "RPC"
+	name = "rpc"
 	version = "master"
 	license = "MIT"
 	author = "<Put your name here> <And your email here>"
 	url = "https://github.com/Enhex/RPC"
 	description = "Basic RPC over TCP."
-	topics = ("<Put some tag here>", "<here>", "<and here>")
-	settings = "os", "compiler", "build_type", "arch"
 	options = {
 		"shared": [True, False],
 		"system_openssl": [True, False],
@@ -38,33 +38,30 @@ class RpcConan(ConanFile):
 		"system_openssl": False,
 		"openssl1": False,
 	}
-	generators = "premake"
-	exports = "premake5.lua"
 	exports_sources = "src/*"
-
-	requires = (
-		"high_level_asio/master@enhex/stable"
-	)
+	# headers only:
+	# settings = "os", "compiler", "build_type", "arch"
+	#generators = "PremakeDeps"
+	no_copy_source = True
 
 	def requirements(self):
+		self.requires("high_level_asio/master", transitive_headers=True)
 		if not self.options.system_openssl:
 			if self.options.openssl1:
 				self.requires("openssl/1.1.1w")
 			else:
-				self.requires("openssl/3.2.0")
-
-	# def build(self):
-	# 	run_premake(self)
-	# 	self.run('build')
+				self.requires("openssl/3.3.2")
 
 	def package(self):
-		self.copy("*.h", dst="include", src="src")
-		# self.copy("*.lib", dst="lib", keep_path=False)
-		# self.copy("*.dll", dst="bin", keep_path=False)
-		# self.copy("*.dylib*", dst="lib", keep_path=False)
-		# self.copy("*.so", dst="lib", keep_path=False)
-		# self.copy("*.a", dst="lib", keep_path=False)
+		copy(self, "*.h", os.path.join(self.source_folder, "src"), os.path.join(self.package_folder, "include"))
 
 	def package_info(self):
 		if self.options.system_openssl:
 			self.cpp_info.system_libs = ["ssl", "crypto"]
+		# For header-only packages, libdirs and bindirs are not used
+		# so it's necessary to set those as empty.
+		self.cpp_info.bindirs = []
+		self.cpp_info.libdirs = []
+
+	def package_id(self):
+		self.info.clear()
