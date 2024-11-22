@@ -39,9 +39,9 @@ class RpcConan(ConanFile):
 		"openssl1": False,
 	}
 	exports_sources = "src/*"
+	generators = "PremakeDeps"
+	settings = "os", "compiler", "build_type", "arch"
 	# headers only:
-	# settings = "os", "compiler", "build_type", "arch"
-	#generators = "PremakeDeps"
 	no_copy_source = True
 
 	def requirements(self):
