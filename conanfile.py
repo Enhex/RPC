@@ -25,7 +25,6 @@ class RpcConan(ConanFile):
 	name = "rpc"
 	version = "master"
 	license = "MIT"
-	author = "<Put your name here> <And your email here>"
 	url = "https://github.com/Enhex/RPC"
 	description = "Basic RPC over TCP."
 	options = {
@@ -50,7 +49,7 @@ class RpcConan(ConanFile):
 			if self.options.openssl1:
 				self.requires("openssl/1.1.1w")
 			else:
-				self.requires("openssl/3.4.1")
+				self.requires("openssl/3.5.1")
 
 	def package(self):
 		copy(self, "*.h", os.path.join(self.source_folder, "src"), os.path.join(self.package_folder, "include"))
